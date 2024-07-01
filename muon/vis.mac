@@ -1,0 +1,20 @@
+/run/initialize
+/vis/open OGL
+/vis/viewer/set/viewpointVector 1 1 1
+/vis/drawVolume
+/vis/modeling/trajectories/create/drawByParticleID new
+/vis/modeling/trajectories/new/set e+ blue
+/vis/modeling/trajectories/new/set e- blue
+/vis/modeling/trajectories/new/set opticalphoton green
+/vis/modeling/trajectories/new/set gamma violet
+/vis/modeling/trajectories/new/set mu- red
+/vis/modeling/trajectories/new/set mu+ red
+/vis/modeling/trajectories/new/set tau- yellow
+/vis/modeling/trajectories/new/set tau+ yellow
+/vis/viewer/set/autoRefresh true
+/vis/scene/add/gps
+/vis/scene/add/trajectories smooth
+/vis/scene/add/scale 10 cm
+/vis/scene/add/axes
+/vis/scene/add/eventID
+/vis/scene/endOfEventAction accumulate
