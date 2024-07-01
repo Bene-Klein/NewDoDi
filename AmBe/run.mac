@@ -1,0 +1,55 @@
+/run/numberOfThreads 16
+/run/initialize
+###
+###
+/gps/particle neutron
+###
+/gps/pos/type Volume
+/gps/pos/shape Para
+/gps/pos/centre 0 0 +150  
+/gps/pos/halfx 2.5 
+/gps/pos/halfy 2.5 
+/gps/pos/halfz 2.5 
+###
+/gps/ang/type iso
+###
+/gps/hist/type energy
+/gps/hist/point 0. 0.014
+/gps/hist/point 0.2 0.033
+/gps/hist/point 0.4 0.031
+/gps/hist/point 0.6 0.028
+/gps/hist/point 0.8 0.025
+/gps/hist/point 1. 0.022
+/gps/hist/point 1.2 0.02
+/gps/hist/point 1.4 0.018
+/gps/hist/point 1.6 0.019
+/gps/hist/point 1.8 0.023
+/gps/hist/point 2. 0.022
+/gps/hist/point 2.2 0.023
+/gps/hist/point 2.4 0.024
+/gps/hist/point 2.6 0.029
+/gps/hist/point 2.8 0.036
+/gps/hist/point 3. 0.037
+/gps/hist/point 3.2 0.035
+/gps/hist/point 3.4 0.031
+/gps/hist/point 3.6 0.03
+/gps/hist/point 3.8 0.027
+/gps/hist/point 4. 0.028
+/gps/hist/point 4.2 0.032
+/gps/hist/point 4.4 0.031
+/gps/hist/point 4.6 0.034
+/gps/hist/point 4.5 0.030
+/gps/hist/point 5. 0.024
+/gps/hist/point 5.2 0.030
+/gps/hist/point 5.5 0.024
+/gps/hist/point 6.0 0.017
+/gps/hist/point 6.5 0.020
+/gps/hist/point 7. 0.017
+/gps/hist/point 7.5 0.019
+/gps/hist/point 8. 0.017
+/gps/hist/point 9. 0.04
+/gps/hist/point 10. 0.05
+/gps/hist/point 11. 0.0
+###
+/run/reinitializeGeometry 
+/run/beamOn 36000000
