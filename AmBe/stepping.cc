@@ -23,6 +23,7 @@ void MySteppingAction::UserSteppingAction(const G4Step *step)
     G4LogicalVolume *fScoringVolume = detectorConstruction->GetScoringVolume();
     G4VProcess* process = const_cast<G4VProcess*>(endPoint->GetProcessDefinedStep());
     G4double Time = step->GetPostStepPoint()->GetGlobalTime();
+
     
     //
     G4String particleNameMu ="mu-";
@@ -68,7 +69,11 @@ if(PreVolume->GetName() == "logicWater")
     G4double edep = step->GetTotalEnergyDeposit();
     fEventAction->AddEdep(edep);
 }
-if(particle == requiredNeutron && step->GetTrack()->GetTrackStatus() == fStopAndKill && process->GetProcessName() == "nCapture" )
+if (particle == requiredMu)
+{
+    G4cout << step->GetTrack()->GetStepLength() / CLHEP::mm << G4endl;
+}
+/*if(particle == requiredNeutron && step->GetTrack()->GetTrackStatus() == fStopAndKill && process->GetProcessName() == "nCapture" )
     {
         G4HadronicProcess* hproc = dynamic_cast<G4HadronicProcess*>(process);
         const G4Isotope* target = NULL;
@@ -112,5 +117,5 @@ if(particle == requiredNeutron && step->GetTrack()->GetTrackStatus() == fStopAnd
                 fEventAction->SetTime(Time);
             }
         }
-    }
+    }*/
 }

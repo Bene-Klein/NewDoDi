@@ -21,6 +21,9 @@
 #include "G4GenericMessenger.hh"
 #include "G4OpticalSurface.hh"
 #include "G4Material.hh"
+#include "G4MultiUnion.hh"
+#include "G4UnionSolid.hh"
+#include "G4UserLimits.hh"
 #include <cmath>
 
 #include "detector.hh"
@@ -41,8 +44,9 @@ private:
     G4Transform3D Rotation(G4double, G4double, G4double, G4double, G4double, G4double, G4double);
     G4Transform3D doubleRotation(G4double, G4double, G4double, G4double, G4double, G4double, G4double);
     G4Transform3D rotZ(G4double theta, G4double x_1, G4double y_1, G4double z_1);
-
-
+    G4LogicalVolume* MyDoDiConstruction(G4double a,G4double Steel,G4double Foil,G4Material* mat);
+    void SetMaxStep(G4double maxStep);
+    
     G4int nCols, nRows;
     G4double gerscale,thetax,thetay,thetaz;
 
@@ -57,7 +61,7 @@ private:
                         *physSteel1,*physSteel2,*physSteel3,*physSteel4,*physSteel5, *physSteel6,*physSteel7,*physSteel8,*physSteel9,*physSteel10,*physSteel11,*physSteel12,
                         *physWater1,*physWater2,*physWater3,*physWater4,*physWater5, *physWater6,*physWater7,*physWater8,*physWater9,*physWater10,*physWater11,*physWater12,
                         *physFoil1, *physFoil2, *physFoil3, *physFoil4, *physFoil5, *physFoil6, *physFoil7, *physFoil8, *physFoil9, *physFoil10, *physFoil11, *physFoil12,
-                        *physDetector, *physDetector3, *physDetector4, *physDetector5, *physDetector6, *physDetector7, *physDetector8, *physDetector9, *physDetector10, *physDetector11, *physDetector12,
+                        *physDetector2, *physDetector3, *physDetector4, *physDetector5, *physDetector6, *physDetector7, *physDetector8, *physDetector9, *physDetector10, *physDetector11, *physDetector12,
                         *physParaffin1,*physParaffin2,*physParaffin3,*physParaffin4,*physParaffin5,
                         *physGadolinium;
     G4LogicalBorderSurface *waterSurface1,*waterSurface2,*waterSurface3,*waterSurface4,
