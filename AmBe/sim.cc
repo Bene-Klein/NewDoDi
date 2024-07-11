@@ -11,6 +11,9 @@
 #include "G4EmStandardPhysics.hh"
 #include "G4OpticalPhysics.hh"
 #include "G4VModularPhysicsList.hh"
+#include "G4StepLimiterPhysics.hh"
+#include "G4Step.hh"
+#include "G4SteppingManager.hh"
 
 #include "construction.hh"
 #include "physics.hh"
@@ -26,13 +29,17 @@ int main(int argc, char** argv)
     #else
       G4RunManager* runManager = new G4RunManager;
     #endif
-    
-    runManager->SetUserInitialization(new MyDetectorConstruction());
+
+    G4StepLimiterPhysics* stepLimitPhys = new G4StepLimiterPhysics();
+    stepLimitPhys->SetApplyToAll(true); // activates step limit for ALL particles    
     G4VModularPhysicsList *physics = new Shielding();
     physics->RegisterPhysics(new G4EmStandardPhysics());
     physics->RegisterPhysics(new G4OpticalPhysics());
+    physics->RegisterPhysics(stepLimitPhys);
     runManager->SetUserInitialization(physics);
     runManager->SetUserInitialization(new MyActionInitialization());
+    runManager->SetUserInitialization(new MyDetectorConstruction());
+    
 
     //runManager->Initialize();
 

@@ -19,6 +19,8 @@ MyDetectorConstruction::MyDetectorConstruction()
 
 MyDetectorConstruction::~MyDetectorConstruction()
 {
+    delete fMessenger;
+
 }
 
 void MyDetectorConstruction::DefineMaterials()
@@ -177,63 +179,129 @@ G4Transform3D MyDetectorConstruction::rotZ(G4double theta, G4double x_1, G4doubl
  
     return Trans;
 }
+G4LogicalVolume* MyDetectorConstruction::MyDoDiConstruction(G4double a, G4double Steel, G4double Foil, G4Material* mat )
+{
+                //prelim calculations
+                G4double alpha = 72 * M_PI / 180;
+                G4double beta = 54 * M_PI / 180;                         
+                G4double lWorld = a / (2 * sin(36 * degree)); // mm
 
+                G4double r_i = (a / 20) * sqrt(250 + 110 * sqrt(5)); // mm
+                G4double r_k = (a / 4) * (3 + sqrt(5));              // mm
+                G4double r_e = (a / 4) * sqrt(3) * (1 + sqrt(5));    // mm
+                G4double d_l = a / (2 * tan(36 * degree));           // mm
+
+                G4double R_i = (1.113516364) * a; // mm
+                G4double R_k = 1.309016994 * a;   // mm
+
+                G4double Beta = acos(r_i / r_k);                                // Rad
+                G4double Alpha = acos(r_i / r_e);                               // Rad
+                G4double Gamma_div2 = asin(a / (2 * r_e));                 // Rad
+                G4double Theta = M_PI - 2 * atan((sqrt(5) - 1) / 2);            // Rad
+                G4double Phi = (M_PI / 2) + atan(((sqrt(5) - 1) / 2));          // Rad
+                G4double Kappa = 2 * Beta - acos(d_l * cos(36 * degree / r_i)); // Rad
+
+                G4double SteelThickness = Steel ;
+
+                G4double FoilThickness =  Foil;//
+
+
+                G4double phiStart = 0;
+                G4double phiTotal = 2 * M_PI;
+                G4int numSide = 5;
+                G4int numZPlanes = 2;
+                G4double rInnerSteel[] = {0, 0};
+                G4double rOuterSteel[] = {0, (d_l/r_i)*(r_i + SteelThickness + FoilThickness)};
+                G4double zPlaneSteel[] = {0, r_i + SteelThickness + FoilThickness};
+                
+                // Define two -G4Box- shapes
+                //
+                G4Polyhedra* poly1 = new G4Polyhedra("poly1", phiStart, phiTotal, numSide, numZPlanes, zPlaneSteel, rInnerSteel, rOuterSteel);
+                G4Polyhedra* poly2 = new G4Polyhedra("poly1", phiStart, phiTotal, numSide, numZPlanes, zPlaneSteel, rInnerSteel, rOuterSteel);
+                G4Polyhedra* poly3 = new G4Polyhedra("poly1", phiStart, phiTotal, numSide, numZPlanes, zPlaneSteel, rInnerSteel, rOuterSteel);
+                G4Polyhedra* poly4 = new G4Polyhedra("poly1", phiStart, phiTotal, numSide, numZPlanes, zPlaneSteel, rInnerSteel, rOuterSteel);
+                G4Polyhedra* poly5 = new G4Polyhedra("poly1", phiStart, phiTotal, numSide, numZPlanes, zPlaneSteel, rInnerSteel, rOuterSteel);
+                G4Polyhedra* poly6 = new G4Polyhedra("poly1", phiStart, phiTotal, numSide, numZPlanes, zPlaneSteel, rInnerSteel, rOuterSteel);
+                G4Polyhedra* poly7 = new G4Polyhedra("poly1", phiStart, phiTotal, numSide, numZPlanes, zPlaneSteel, rInnerSteel, rOuterSteel);
+                G4Polyhedra* poly8 = new G4Polyhedra("poly1", phiStart, phiTotal, numSide, numZPlanes, zPlaneSteel, rInnerSteel, rOuterSteel);
+                G4Polyhedra* poly9 = new G4Polyhedra("poly1", phiStart, phiTotal, numSide, numZPlanes, zPlaneSteel, rInnerSteel, rOuterSteel);
+                G4Polyhedra* poly10 = new G4Polyhedra("poly1", phiStart, phiTotal, numSide, numZPlanes, zPlaneSteel, rInnerSteel, rOuterSteel);
+                G4Polyhedra* poly11 = new G4Polyhedra("poly1", phiStart, phiTotal, numSide, numZPlanes, zPlaneSteel, rInnerSteel, rOuterSteel);
+                G4Polyhedra* poly12 = new G4Polyhedra("poly1", phiStart, phiTotal, numSide, numZPlanes, zPlaneSteel, rInnerSteel, rOuterSteel);
+    
+                // Define displacements for the shapes
+                //
+                G4Transform3D tr1 = Rotation(0, 0, 0, r_i+SteelThickness+FoilThickness, 0, 0, 0);
+                G4Transform3D tr2 = Rotation(180 * degree, -(r_i+(SteelThickness+FoilThickness)) * tan(Beta), 0, r_i+(SteelThickness+FoilThickness), 0, 0, 0);
+                G4Transform3D tr3 = Rotation(180 * degree, -(r_i+(SteelThickness+FoilThickness))* tan(Beta) * cos(72 * degree), (r_i+(SteelThickness+FoilThickness)) * tan(Beta) * sin(72 * degree), r_i+(SteelThickness+FoilThickness), 0, 0, 0);
+                G4Transform3D tr4 = Rotation(180 * degree, -(r_i+(SteelThickness+FoilThickness)) * tan(Beta) * cos(2 * 72 * degree), (r_i+(SteelThickness+FoilThickness)) * tan(Beta) * sin(2 * 72 * degree), r_i+(SteelThickness+FoilThickness), 0, 0, 0);
+                G4Transform3D tr5 = Rotation(180 * degree, -(r_i+(SteelThickness+FoilThickness)) * tan(Beta) * cos(72 * degree), -(r_i+(SteelThickness+FoilThickness)) * tan(Beta) * sin(72 * degree), r_i+(SteelThickness+FoilThickness), 0, 0, 0);
+                G4Transform3D tr6 = Rotation(180 * degree, -(r_i+(SteelThickness+FoilThickness)) * tan(Beta) * cos(2 * 72 * degree), -(r_i+(SteelThickness+FoilThickness)) * tan(Beta) * sin(2 * 72 * degree), r_i+(SteelThickness+FoilThickness), 0, 0, 0);
+                G4Transform3D tr7 = doubleRotation(0, 0, 0, r_i+SteelThickness+FoilThickness, 0, 0, 0);
+                G4Transform3D tr8 = doubleRotation(180 * degree, -(r_i+(SteelThickness+FoilThickness)) * tan(Beta), 0, r_i+(SteelThickness+FoilThickness), 0, 0, 0);
+                G4Transform3D tr9 = doubleRotation(180 * degree, -(r_i+(SteelThickness+FoilThickness))* tan(Beta) * cos(72 * degree), (r_i+(SteelThickness+FoilThickness)) * tan(Beta) * sin(72 * degree), r_i+(SteelThickness+FoilThickness), 0, 0, 0);
+                G4Transform3D tr10 = doubleRotation(180 * degree, -(r_i+(SteelThickness+FoilThickness)) * tan(Beta) * cos(2 * 72 * degree), (r_i+(SteelThickness+FoilThickness)) * tan(Beta) * sin(2 * 72 * degree), r_i+(SteelThickness+FoilThickness), 0, 0, 0);
+                G4Transform3D tr11 = doubleRotation(180 * degree, -(r_i+(SteelThickness+FoilThickness)) * tan(Beta) * cos(72 * degree), -(r_i+(SteelThickness+FoilThickness)) * tan(Beta) * sin(72 * degree), r_i+(SteelThickness+FoilThickness), 0, 0, 0);
+                G4Transform3D tr12 = doubleRotation(180 * degree, -(r_i+(SteelThickness+FoilThickness)) * tan(Beta) * cos(2 * 72 * degree), -(r_i+(SteelThickness+FoilThickness)) * tan(Beta) * sin(2 * 72 * degree), r_i+(SteelThickness+FoilThickness), 0, 0, 0);
+
+                // Initialise a MultiUnion structure
+                //
+                G4MultiUnion* munion_solid = new G4MultiUnion("poly_Union");
+                // Add the shapes to the structure
+                //
+                munion_solid->AddNode(*poly1,tr1);
+                munion_solid->AddNode(*poly2,tr2);
+                munion_solid->AddNode(*poly3,tr3);
+                munion_solid->AddNode(*poly4,tr4);
+                munion_solid->AddNode(*poly5,tr5);
+                munion_solid->AddNode(*poly6,tr6);
+                munion_solid->AddNode(*poly7,tr7);
+                munion_solid->AddNode(*poly8,tr8);
+                munion_solid->AddNode(*poly9,tr9);
+                munion_solid->AddNode(*poly10,tr10);
+                munion_solid->AddNode(*poly11,tr11);
+                munion_solid->AddNode(*poly12,tr12);
+                // Finally close the structure
+                //
+                munion_solid->Voxelize();
+                G4LogicalVolume* lvol =new G4LogicalVolume(munion_solid,mat,"Union_LV");
+                return lvol;                 
+}
 G4VPhysicalVolume *MyDetectorConstruction::Construct()
 {
     // test//
+    G4double a =450;
     G4double alpha = 72 * M_PI / 180;
-    G4double beta = 54 * M_PI / 180;
-    G4double aWorld = 0.450 * m;                         // mm
-    G4double lWorld = aWorld / (2 * sin(36 * degree)); // mm
+    G4double beta = 54 * M_PI / 180;                         
+    G4double lWorld = a / (2 * sin(36 * degree)); // mm
 
-    G4double r_i = (aWorld / 20) * sqrt(250 + 110 * sqrt(5)); // mm
-    G4double r_k = (aWorld / 4) * (3 + sqrt(5));              // mm
-    G4double r_e = (aWorld / 4) * sqrt(3) * (1 + sqrt(5));    // mm
-    G4double d_l = aWorld / (2 * tan(36 * degree));           // mm
+    G4double r_i = (a / 20) * sqrt(250 + 110 * sqrt(5)); // mm
+    G4double r_k = (a / 4) * (3 + sqrt(5));              // mm
+    G4double r_e = (a / 4) * sqrt(3) * (1 + sqrt(5));    // mm
+    G4double d_l = a / (2 * tan(36 * degree));           // mm
 
-    G4double R_i = (1.113516364) * aWorld; // mm
-    G4double R_k = 1.309016994 * aWorld;   // mm
+    G4double R_i = (1.113516364) * a; // mm
+    G4double R_k = 1.309016994 * a;   // mm
 
     G4double Beta = acos(r_i / r_k);                                // Rad
     G4double Alpha = acos(r_i / r_e);                               // Rad
-    G4double Gamma_div2 = asin(aWorld / (2 * r_e));                 // Rad
+    G4double Gamma_div2 = asin(a / (2 * r_e));                 // Rad
     G4double Theta = M_PI - 2 * atan((sqrt(5) - 1) / 2);            // Rad
     G4double Phi = (M_PI / 2) + atan(((sqrt(5) - 1) / 2));          // Rad
     G4double Kappa = 2 * Beta - acos(d_l * cos(36 * degree / r_i)); // Rad
-
-    G4double SteelThickness = 10 * mm ;
-
-    G4double FoilThickness =  65 * um ;//
-
-
     //World Cube
     G4double world = 2 * m; // mm
-    
-    //DoDi Steel
+
+    //Gadolinium
     G4double phiStart = 0;
     G4double phiTotal = 2 * M_PI;
     G4int numSide = 5;
-    G4int numZPlanes = 2;
-    G4double rInnerSteel[] = {0, 0};
-    G4double rOuterSteel[] = {0, (d_l/r_i)*(r_i + SteelThickness + FoilThickness)};
-    G4double zPlaneSteel[] = {0, r_i + SteelThickness + FoilThickness};
-    
-    //DoDi Foil
-    G4double rInnerFoil[] = {0, 0};
-    G4double rOuterFoil[] = {0, (d_l/r_i)*(r_i+FoilThickness)};
-    G4double zPlaneFoil[] = {0, r_i + FoilThickness};
-
-    //DoDi Water
-    G4double rInnerWater[] = {0, 0};
-    G4double rOuterWater[] = {0, d_l};
-    G4double zPlaneWater[] = {0, r_i};
-    
-    //Gadolinium
+    G4int numZPlanes =2;
     G4double rInnerGadolinium[] = {0, 0};
     G4double rOuterGadolinium[] = {(d_l/r_i)*(r_i - 5*cm), (d_l/r_i)*(r_i -5*cm)};
     G4double zPlaneGadolinium[] = {0,5*cm};
 
-    //PMT Polycone
+    //PMT Polycone    
     G4double realRadius =(252/2) * mm;
     G4double realHeight =-80*mm ;
     G4double numZPlanes1=11;
@@ -241,111 +309,70 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     G4double rInner1[]={0,0,0,0,0,0,0,0,0,0,0};
     G4double rOuter1[]={realRadius,realRadius*0.98,realRadius*0.95,realRadius*0.9,realRadius*0.85,realRadius*0.7,realRadius*0.60,realRadius*0.5,realRadius*0.4,realRadius*0.25,0};
     
-    //Paraffin 
-    G4double paraffinlength = 5*cm ;
-
-    G4cout << "a: " << aWorld << G4endl;
-    G4cout << "l: " << lWorld << G4endl;
-    G4cout << "d_l: " << d_l << G4endl;
-    G4cout << "r_i/aWorld: " << r_i / aWorld << G4endl;
-    G4cout << "r_i: " << r_i << G4endl;
-    G4cout << "y: " << r_i * tan(Beta) * sin(72 * degree) << G4endl;
-    G4cout << "x: " << -r_i * tan(Beta) * cos(72 * degree) << G4endl;
-    G4cout << "r_k/aWorld: " << r_k / aWorld << G4endl;
-    G4cout << "beta: " << Beta * 180 / M_PI << G4endl;
-    G4cout << "theta: " << Theta * 180 / M_PI << G4endl;
-    G4cout << "phi: " << Phi * 180 / M_PI << G4endl;
-    G4cout << " pi?:" << 2 * (Alpha + Beta + Gamma_div2) << G4endl;
-    G4cout<< "angle: "<< tan(d_l/r_i)*(180/M_PI)<<G4endl;
-    G4cout<< "r_k/2m: "<< (r_k/2 * m)<< "tan()"<< atan(r_k/(2 * m)) * (180/ M_PI) << G4endl;
 
 
     //solid volume
     solidWorld = new G4Box("solidWorld", world, world, world);
-    
-    solidSteel = new G4Polyhedra("solidFoil", phiStart, phiTotal, numSide, numZPlanes, zPlaneSteel, rInnerSteel, rOuterSteel);
-    solidSteel1 = new G4Polyhedra("solidFoil1", phiStart, phiTotal, numSide, numZPlanes, zPlaneSteel, rInnerSteel, rOuterSteel);
-
-    solidFoil = new G4Polyhedra("solidFoil", phiStart, phiTotal, numSide, numZPlanes, zPlaneFoil, rInnerFoil, rOuterFoil);
-    solidFoil1 = new G4Polyhedra("solidFoil1", phiStart, phiTotal, numSide, numZPlanes, zPlaneFoil, rInnerFoil, rOuterFoil);
-
-    solidWater = new G4Polyhedra("solidWater", phiStart, phiTotal, numSide, numZPlanes, zPlaneWater, rInnerWater, rOuterWater);
-    solidWater1 = new G4Polyhedra("solidWater1", phiStart, phiTotal, numSide, numZPlanes, zPlaneWater, rInnerWater, rOuterWater);
 
     solidDetector = new G4Polycone("solidDetector",phiStart, phiTotal, numZPlanes1,zPlane1, rInner1, rOuter1); 
     
-    solidPanel = new G4Box("solidPanel", 0.5*m, 0.5*m, 0.01*m);
-
-    solidHuman = new G4Tubs("solidHuman", 0, 40*cm, 1*m, 0, 2*M_PI);
-
     solidGadolinium = new G4Polyhedra("solidGadolinium", phiStart, phiTotal, numSide, numZPlanes, zPlaneGadolinium, rInnerGadolinium, rOuterGadolinium);
 
-    solidParaffin = new G4Box("solidParaffin", 37.5*cm, 15*cm, 50*cm);
+
     // logic volume
     logicWorld = new G4LogicalVolume(solidWorld, fworldMat, "logicWorld");
 
-    logicSteel= new G4LogicalVolume(solidSteel, matsteel , "logicSteel");
-    logicSteel1= new G4LogicalVolume(solidSteel1, matsteel , "logicSteel");
+    logicSteel = MyDoDiConstruction(450,10,65*um,matsteel);
 
-    logicFoil = new G4LogicalVolume(solidFoil, fWLSfoilPMMA , "logicFoil");
-    logicFoil1 = new G4LogicalVolume(solidFoil1, fWLSfoilPMMA , "logicFoil");
+    logicFoil = MyDoDiConstruction(450,0,65*um,fH2O);
 
-    logicWater = new G4LogicalVolume(solidWater, fH2O, "logicWater");
-    logicWater1 = new G4LogicalVolume(solidWater1, fH2O, "logicWater");
-
+    logicWater = MyDoDiConstruction(450,0,0,fH2O);
+    
     logicDetector = new G4LogicalVolume(solidDetector, fworldMat, "logicDetector");
 
-    logicPanel = new G4LogicalVolume(solidPanel, fworldMat, "logicPanel");
-
-    logicHuman = new G4LogicalVolume(solidHuman, fworldMat, "logicHuman");
-
     logicGadolinium =new G4LogicalVolume(solidGadolinium, Gdsol, "logicGadolinium");
-
-    logicParaffin = new G4LogicalVolume(solidParaffin, matparaffin, "logicParaffin");
    
     //World Vol. placement
     physWorld = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), logicWorld, "physWorld", 0, false, 0, true);
 
     //Steel DoDi
-    physSteel1 = new G4PVPlacement(
-        Rotation(0, 0, 0, r_i+SteelThickness+FoilThickness, 0, 0, 0),
-        logicSteel1, "physSteel", logicWorld, false,01, true);
-    physSteel2 = new G4PVPlacement(
-        Rotation(180 * degree, -(r_i+(SteelThickness+FoilThickness)) * tan(Beta), 0, r_i+(SteelThickness+FoilThickness), 0, 0, 0),
-        logicSteel, "physSteel", logicWorld, false, 0, true);
-    physSteel3 = new G4PVPlacement(
-        Rotation(180 * degree, -(r_i+(SteelThickness+FoilThickness))* tan(Beta) * cos(72 * degree), (r_i+(SteelThickness+FoilThickness)) * tan(Beta) * sin(72 * degree), r_i+(SteelThickness+FoilThickness), 0, 0, 0),
-        logicSteel, "physSteel", logicWorld, false, 0, true);
-    physSteel4 = new G4PVPlacement(
-        Rotation(180 * degree, -(r_i+(SteelThickness+FoilThickness)) * tan(Beta) * cos(2 * 72 * degree), (r_i+(SteelThickness+FoilThickness)) * tan(Beta) * sin(2 * 72 * degree), r_i+(SteelThickness+FoilThickness), 0, 0, 0),
-        logicSteel, "physSteel", logicWorld, false, 0, true);
-    physSteel5 = new G4PVPlacement(
-        Rotation(180 * degree, -(r_i+(SteelThickness+FoilThickness)) * tan(Beta) * cos(72 * degree), -(r_i+(SteelThickness+FoilThickness)) * tan(Beta) * sin(72 * degree), r_i+(SteelThickness+FoilThickness), 0, 0, 0),
-        logicSteel, "physSteel", logicWorld, false, 0, true);
-    physSteel6 = new G4PVPlacement(
-        Rotation(180 * degree, -(r_i+(SteelThickness+FoilThickness)) * tan(Beta) * cos(2 * 72 * degree), -(r_i+(SteelThickness+FoilThickness)) * tan(Beta) * sin(2 * 72 * degree), r_i+(SteelThickness+FoilThickness), 0, 0, 0),
-        logicSteel, "physSteel", logicWorld, false, 0, true);
-    physSteel7 = new G4PVPlacement(
-        doubleRotation(0, 0, 0, r_i+(SteelThickness+FoilThickness), 0, 0, 0),
-        logicSteel, "physSteel", logicWorld, false, 0, true);
-    physSteel8 = new G4PVPlacement(
-        doubleRotation(180 * degree, -(r_i+(SteelThickness+FoilThickness)) * tan(Beta), 0, r_i+(SteelThickness+FoilThickness), 0, 0, 0),
-        logicSteel, "physSteel", logicWorld, false, 0, true);
-    physSteel9 = new G4PVPlacement(
-        doubleRotation(180 * degree, -(r_i+(SteelThickness+FoilThickness)) * tan(Beta) * cos(72 * degree), (r_i+(SteelThickness+FoilThickness)) * tan(Beta) * sin(72 * degree), r_i+(SteelThickness+FoilThickness), 0, 0, 0),
-        logicSteel, "physSteel", logicWorld, false, 0, true);
-    physSteel10 = new G4PVPlacement(
-        doubleRotation(180 * degree, -(r_i+(SteelThickness+FoilThickness)) * tan(Beta) * cos(2 * 72 * degree), (r_i+(SteelThickness+FoilThickness)) * tan(Beta) * sin(2 * 72 * degree), r_i+(SteelThickness+FoilThickness), 0, 0, 0),
-        logicSteel, "physSteel", logicWorld, false, 0, true);
-    physSteel11 = new G4PVPlacement(
-        doubleRotation(180 * degree, -(r_i+(SteelThickness+FoilThickness)) * tan(Beta) * cos(72 * degree), -(r_i+(SteelThickness+FoilThickness)) * tan(Beta) * sin(72 * degree), r_i+(SteelThickness+FoilThickness), 0, 0, 0),
-        logicSteel, "physSteel", logicWorld, false, 0, true);
-    physSteel12 = new G4PVPlacement(
-        doubleRotation(180 * degree, -(r_i+(SteelThickness+FoilThickness)) * tan(Beta) * cos(2 * 72 * degree), -(r_i+(SteelThickness+FoilThickness)) * tan(Beta) * sin(2 * 72 * degree), r_i+(SteelThickness+FoilThickness), 0, 0, 0),
-        logicSteel, "physSteel", logicWorld, false, 0, true);
+
+    physDetector2 = new G4PVPlacement(
+        Rotation(180 * degree, -(r_i) * tan(Beta), 0, r_i, 0, 0, r_i),
+        logicDetector, "physDetector", logicWorld, false, 2, true);
+    physDetector3 = new G4PVPlacement(
+        Rotation(180 * degree, -(r_i)* tan(Beta) * cos(72 * degree), (r_i) * tan(Beta) * sin(72 * degree), r_i, 0, 0, r_i),
+        logicDetector, "physDetector", logicWorld, false, 3, true);
+    physDetector4 = new G4PVPlacement(
+        Rotation(180 * degree, -(r_i) * tan(Beta) * cos(2 * 72 * degree), (r_i) * tan(Beta) * sin(2 * 72 * degree), r_i, 0, 0, r_i),
+        logicDetector, "physDetector", logicWorld, false, 4, true);
+    physDetector5 = new G4PVPlacement(
+        Rotation(180 * degree, -(r_i) * tan(Beta) * cos(72 * degree), -(r_i) * tan(Beta) * sin(72 * degree), r_i, 0, 0, r_i),
+        logicDetector, "physDetector", logicWorld, false, 5, true);
+    physDetector6 = new G4PVPlacement(
+        Rotation(180 * degree, -(r_i) * tan(Beta) * cos(2 * 72 * degree), -(r_i) * tan(Beta) * sin(2 * 72 * degree), r_i, 0, 0, r_i),
+        logicDetector, "physDetector", logicWorld, false, 6, true);
+    physDetector7 = new G4PVPlacement(
+        doubleRotation(0, 0, 0, r_i, 0, 0, r_i),
+        logicDetector, "physDetector", logicWorld, false, 7, true);
+    physDetector8 = new G4PVPlacement(
+        doubleRotation(180 * degree, -(r_i) * tan(Beta), 0, r_i, 0, 0, r_i),
+        logicDetector, "physDetector", logicWorld, false, 8, true);
+    physDetector9 = new G4PVPlacement(
+        doubleRotation(180 * degree, -(r_i) * tan(Beta) * cos(72 * degree), (r_i) * tan(Beta) * sin(72 * degree), r_i, 0, 0, r_i),
+        logicDetector, "physDetector", logicWorld, false, 9, true);
+    physDetector10 = new G4PVPlacement(
+        doubleRotation(180 * degree, -(r_i) * tan(Beta) * cos(2 * 72 * degree), (r_i) * tan(Beta) * sin(2 * 72 * degree), r_i, 0, 0, r_i),
+        logicDetector, "physDetector", logicWorld, false, 10, true);
+    physDetector11 = new G4PVPlacement(
+        doubleRotation(180 * degree, -(r_i) * tan(Beta) * cos(72 * degree), -(r_i) * tan(Beta) * sin(72 * degree), r_i, 0, 0, r_i),
+        logicDetector, "physDetector", logicWorld, false, 11, true);
+    physDetector12 = new G4PVPlacement(
+        doubleRotation(180 * degree, -(r_i) * tan(Beta) * cos(2 * 72 * degree), -(r_i) * tan(Beta) * sin(2 * 72 * degree), r_i, 0, 0, r_i),
+        logicDetector, "physDetector", logicWorld, false, 12, true);
 
     //Foil DoDi
-    physFoil1 = new G4PVPlacement(
+    /*physFoil1 = new G4PVPlacement(
         Rotation(0, 0, 0, r_i+FoilThickness, 0, 0, 0),
         logicFoil, "physFoil", logicSteel,  false,0, true);
     /*physFoil2 = new G4PVPlacement(
@@ -362,7 +389,7 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
         logicFoil, "physFoil", logicWorld, false, 0, true);
     physFoil6 = new G4PVPlacement(
         Rotation(180 * degree, -(r_i+FoilThickness) * tan(Beta) * cos(2 * 72 * degree), -(r_i+FoilThickness) * tan(Beta) * sin(2 * 72 * degree), r_i+FoilThickness, 0, 0, 0),
-        logicFoil, "physFoil", logicWorld, false, 0, true);*/
+        logicFoil, "physFoil", logicWorld, false, 0, true);
     physFoil7 = new G4PVPlacement(
         Rotation(0, 0, 0, r_i+FoilThickness, 0, 0, 0),
         logicFoil1, "physFoil", logicSteel1, false, 01, true);
@@ -383,6 +410,12 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
         logicFoil, "physFoil", logicWorld, false, 0, true);*/
 
     //DoDi Water
+    physSteel1 = new G4PVPlacement(
+        Rotation(0, 0, 0, r_i, 0, 0, 0),
+        logicSteel, "physSteel", logicWorld, false, 0, true);
+    physFoil1 = new G4PVPlacement(
+        Rotation(0, 0, 0, r_i, 0, 0, 0),
+        logicFoil, "physFoil", logicSteel, false, 0, true);
     physWater1 = new G4PVPlacement(
         Rotation(0, 0, 0, r_i, 0, 0, 0),
         logicWater, "physWater", logicFoil, false, 0, true);
@@ -400,7 +433,7 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
         logicWater, "physWater", logicWorld, false, 0, true);
     physWater6 = new G4PVPlacement(
         Rotation(180 * degree, -(r_i) * tan(Beta) * cos(2 * 72 * degree), -(r_i) * tan(Beta) * sin(2 * 72 * degree), r_i, 0, 0, 0),
-        logicWater, "physWater", logicWorld, false, 0, true);*/
+        logicWater, "physWater", logicWorld, false, 0, true);
     physWater7 = new G4PVPlacement(
         Rotation(0, 0, 0, r_i, 0, 0, 0),
         logicWater1, "physWater", logicFoil1, false, 01, true);
@@ -421,7 +454,7 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
         logicWater, "physWater", logicWorld, false, 0, true);*/
 
     //DoDi Detector
-    physDetector = new G4PVPlacement(
+    /*physDetector = new G4PVPlacement(
         Rotation(180 * degree,0, 0, r_i, 0, 0, r_i),
         logicDetector, "physDetector", logicWater, false, 2, true);
 
@@ -435,7 +468,12 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
 
     physGadolinium = new G4PVPlacement(0, G4ThreeVector(0,0,+(r_i - 5*cm-2*FoilThickness)), logicGadolinium, "physGadolinium", logicWater1, false, 35, true);
 
-    fScoringVolume = logicGadolinium;
+    fScoringVolume = logicGadolinium;*/
+    defineBoundaries();
+    G4double maxStep = 1*mm;
+    auto fStepLimit = new G4UserLimits(maxStep);
+    logicWater->SetUserLimits(fStepLimit);
+
     return physWorld;
 }
 
@@ -470,7 +508,7 @@ void MyDetectorConstruction::defineBoundaries()
     std::vector<G4double> transmissionSecond = {0.,0.};
     secondMPT->AddProperty("REFLECTIVITY", fenergySmall, reflectivitySecond, 2);
     secondMPT->AddProperty("TRANSMITTANCE", fenergySmall, transmissionSecond, 2);
-
+    
     G4OpticalSurface *SecondBoundary = new G4OpticalSurface("SecondBoundary");
     SecondBoundary->SetType(dielectric_dielectric);
     SecondBoundary->SetModel(unified);
@@ -478,19 +516,7 @@ void MyDetectorConstruction::defineBoundaries()
     SecondBoundary->SetMaterialPropertiesTable(secondMPT);
 
     G4LogicalBorderSurface *SecondSurface1 = new G4LogicalBorderSurface("SecondSurface", physFoil1, physSteel1 , SecondBoundary);
-    G4LogicalBorderSurface *SecondSurface2 = new G4LogicalBorderSurface("SecondSurface", physFoil7, physSteel7 , SecondBoundary);
-    /*
-    G4LogicalBorderSurface *SecondSurface3 = new G4LogicalBorderSurface("SecondSurface", physFoil3, physSteel3 , SecondBoundary);
-    G4LogicalBorderSurface *SecondSurface4 = new G4LogicalBorderSurface("SecondSurface", physFoil4, physSteel4 , SecondBoundary);
-    G4LogicalBorderSurface *SecondSurface5 = new G4LogicalBorderSurface("SecondSurface", physFoil5, physSteel5 , SecondBoundary);
-    G4LogicalBorderSurface *SecondSurface6 = new G4LogicalBorderSurface("SecondSurface", physFoil6, physSteel6 , SecondBoundary);
-    G4LogicalBorderSurface *SecondSurface7 = new G4LogicalBorderSurface("SecondSurface", physFoil7, physSteel7 , SecondBoundary);
-    G4LogicalBorderSurface *SecondSurface8 = new G4LogicalBorderSurface("SecondSurface", physFoil8, physSteel8 , SecondBoundary);
-    G4LogicalBorderSurface *SecondSurface9 = new G4LogicalBorderSurface("SecondSurface", physFoil9, physSteel9 , SecondBoundary);
-    G4LogicalBorderSurface *SecondSurface10 = new G4LogicalBorderSurface("SecondSurface", physFoil10, physSteel10 , SecondBoundary);
-    G4LogicalBorderSurface *SecondSurface11 = new G4LogicalBorderSurface("SecondSurface", physFoil11, physSteel11 , SecondBoundary);
-    G4LogicalBorderSurface *SecondSurface12 = new G4LogicalBorderSurface("SecondSurface", physFoil12, physSteel12 , SecondBoundary);
-    */
+
 }
 
 void MyDetectorConstruction::ConstructSDandField()
@@ -501,3 +527,8 @@ void MyDetectorConstruction::ConstructSDandField()
     //logicHuman->SetSensitiveDetector(sensDet);
 
 }
+void MyDetectorConstruction::SetMaxStep(G4double maxStep)
+{
+  //if ((fStepLimit) && (maxStep > 0.)) fStepLimit->SetMaxAllowedStep(maxStep);
+}
+
