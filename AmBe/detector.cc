@@ -64,13 +64,18 @@ G4bool MySensitiveDetector::ProcessHits(G4Step *aStep, G4TouchableHistory *ROhis
     //G4cout << "Detector position: "<< posDetector <<G4endl;
 
     G4AnalysisManager *man = G4AnalysisManager::Instance();
-
-    if(G4UniformRand() < quEff ->Value(wlen) && particle == requiredParticle)
-    {   track->SetTrackStatus(fStopAndKill); 
+    //G4cout<<" Detector"<<G4endl;
+    
+if(particle == requiredParticle)
+{
+    track->SetTrackStatus(fStopAndKill); 
+    if(G4UniformRand() < quEff ->Value(wlen) )
+    {   
         man->FillNtupleDColumn(0,0,Time);
         man->FillNtupleIColumn(0,1,copyNo);
         man->FillNtupleIColumn(0,2,EventID); //FillNtupleDColumn(Ntuple Number, Entry Number, Entry)
         man->AddNtupleRow(0);    
     }
+}
     return true;
 }
