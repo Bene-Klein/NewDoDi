@@ -23,7 +23,11 @@ MyRunAction::MyRunAction()
     man->CreateNtupleDColumn("Z");
     man->CreateNtupleIColumn("EventID");
     man->FinishNtuple(2);
-
+    
+    man->CreateNtuple("ID","ID");
+    man->CreateNtupleIColumn("ID");
+    man->CreateNtupleIColumn("EventID");
+    man->FinishNtuple(3);
     /* 
     man->CreateNtuple("Count","Count");
     man->CreateNtupleIColumn("Count");

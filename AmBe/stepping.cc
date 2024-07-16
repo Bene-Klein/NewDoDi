@@ -73,7 +73,13 @@ if (particle == requiredMu)
 {
     G4cout << step->GetTrack()->GetStepLength() / CLHEP::mm << G4endl;
 }
-/*if(particle == requiredNeutron && step->GetTrack()->GetTrackStatus() == fStopAndKill && process->GetProcessName() == "nCapture" )
+if (particle == requiredPhoton)
+{
+    man->FillNtupleIColumn(3,0,TrackID);
+    man->FillNtupleIColumn(3,1,EventID);
+    man->AddNtupleRow(3); 
+}
+if(particle == requiredNeutron && step->GetTrack()->GetTrackStatus() == fStopAndKill && process->GetProcessName() == "nCapture" )
     {
         G4HadronicProcess* hproc = dynamic_cast<G4HadronicProcess*>(process);
         const G4Isotope* target = NULL;
@@ -117,5 +123,5 @@ if (particle == requiredMu)
                 fEventAction->SetTime(Time);
             }
         }
-    }*/
+    }
 }

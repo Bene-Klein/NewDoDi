@@ -324,7 +324,7 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
 
     logicSteel = MyDoDiConstruction(450,10,65*um,matsteel);
 
-    logicFoil = MyDoDiConstruction(450,0,65*um,fH2O);
+    logicFoil = MyDoDiConstruction(450,0,65*um,fWLSfoilPMMA);
 
     logicWater = MyDoDiConstruction(450,0,0,fH2O);
     
@@ -339,37 +339,37 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
 
     physDetector2 = new G4PVPlacement(
         Rotation(180 * degree, -(r_i) * tan(Beta), 0, r_i, 0, 0, r_i),
-        logicDetector, "physDetector", logicWorld, false, 2, true);
+        logicDetector, "physDetector", logicWater, false, 2, true);
     physDetector3 = new G4PVPlacement(
         Rotation(180 * degree, -(r_i)* tan(Beta) * cos(72 * degree), (r_i) * tan(Beta) * sin(72 * degree), r_i, 0, 0, r_i),
-        logicDetector, "physDetector", logicWorld, false, 3, true);
+        logicDetector, "physDetector", logicWater, false, 3, true);
     physDetector4 = new G4PVPlacement(
         Rotation(180 * degree, -(r_i) * tan(Beta) * cos(2 * 72 * degree), (r_i) * tan(Beta) * sin(2 * 72 * degree), r_i, 0, 0, r_i),
-        logicDetector, "physDetector", logicWorld, false, 4, true);
+        logicDetector, "physDetector", logicWater, false, 4, true);
     physDetector5 = new G4PVPlacement(
         Rotation(180 * degree, -(r_i) * tan(Beta) * cos(72 * degree), -(r_i) * tan(Beta) * sin(72 * degree), r_i, 0, 0, r_i),
-        logicDetector, "physDetector", logicWorld, false, 5, true);
+        logicDetector, "physDetector", logicWater, false, 5, true);
     physDetector6 = new G4PVPlacement(
         Rotation(180 * degree, -(r_i) * tan(Beta) * cos(2 * 72 * degree), -(r_i) * tan(Beta) * sin(2 * 72 * degree), r_i, 0, 0, r_i),
-        logicDetector, "physDetector", logicWorld, false, 6, true);
+        logicDetector, "physDetector", logicWater, false, 6, true);
     physDetector7 = new G4PVPlacement(
         doubleRotation(0, 0, 0, r_i, 0, 0, r_i),
-        logicDetector, "physDetector", logicWorld, false, 7, true);
+        logicDetector, "physDetector", logicWater, false, 7, true);
     physDetector8 = new G4PVPlacement(
         doubleRotation(180 * degree, -(r_i) * tan(Beta), 0, r_i, 0, 0, r_i),
-        logicDetector, "physDetector", logicWorld, false, 8, true);
+        logicDetector, "physDetector", logicWater, false, 8, true);
     physDetector9 = new G4PVPlacement(
         doubleRotation(180 * degree, -(r_i) * tan(Beta) * cos(72 * degree), (r_i) * tan(Beta) * sin(72 * degree), r_i, 0, 0, r_i),
-        logicDetector, "physDetector", logicWorld, false, 9, true);
+        logicDetector, "physDetector", logicWater, false, 9, true);
     physDetector10 = new G4PVPlacement(
         doubleRotation(180 * degree, -(r_i) * tan(Beta) * cos(2 * 72 * degree), (r_i) * tan(Beta) * sin(2 * 72 * degree), r_i, 0, 0, r_i),
-        logicDetector, "physDetector", logicWorld, false, 10, true);
+        logicDetector, "physDetector", logicWater, false, 10, true);
     physDetector11 = new G4PVPlacement(
         doubleRotation(180 * degree, -(r_i) * tan(Beta) * cos(72 * degree), -(r_i) * tan(Beta) * sin(72 * degree), r_i, 0, 0, r_i),
-        logicDetector, "physDetector", logicWorld, false, 11, true);
+        logicDetector, "physDetector", logicWater, false, 11, true);
     physDetector12 = new G4PVPlacement(
         doubleRotation(180 * degree, -(r_i) * tan(Beta) * cos(2 * 72 * degree), -(r_i) * tan(Beta) * sin(2 * 72 * degree), r_i, 0, 0, r_i),
-        logicDetector, "physDetector", logicWorld, false, 12, true);
+        logicDetector, "physDetector", logicWater, false, 12, true);
 
     //Foil DoDi
     /*physFoil1 = new G4PVPlacement(
@@ -467,10 +467,10 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     //physHuman = new G4PVPlacement(0,G4ThreeVector(0,1.5*m,0),logicHuman, "physHuman", logicWorld, false, 69, true);
 
     physGadolinium = new G4PVPlacement(0, G4ThreeVector(0,0,+(r_i - 5*cm-2*FoilThickness)), logicGadolinium, "physGadolinium", logicWater1, false, 35, true);
-
-    fScoringVolume = logicGadolinium;*/
+    */
+    fScoringVolume = logicGadolinium;
     defineBoundaries();
-    G4double maxStep = 1*mm;
+    G4double maxStep = 1 *mm;
     auto fStepLimit = new G4UserLimits(maxStep);
     logicWater->SetUserLimits(fStepLimit);
 
@@ -524,6 +524,7 @@ void MyDetectorConstruction::ConstructSDandField()
     MySensitiveDetector *sensDet = new MySensitiveDetector("SensitiveDetector");
 
     logicDetector->SetSensitiveDetector(sensDet);
+    G4cout<<" SDField"<<G4endl;
     //logicHuman->SetSensitiveDetector(sensDet);
 
 }
