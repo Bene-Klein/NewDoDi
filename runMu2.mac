@@ -1,0 +1,24 @@
+/run/numberOfThreads 16
+/run/initialize
+###
+/gps/particle mu-
+###
+/gps/pos/type Plane
+/gps/pos/shape Rectangle
+/gps/pos/centre 0 -186 -521.147 mm
+/gps/pos/halfx 12 cm
+/gps/pos/halfy 6 cm
+###
+/gps/ang/type beam1d
+/gps/ang/rot1 -1 0 0 
+/gps/ang/rot2 0 1 -0.4 
+/gps/ang/mintheta 0 degree
+/gps/ang/maxtheta 0 degree
+/gps/ang/minphi 20 degree
+/gps/ang/maxphi 20 degree
+###
+/gps/ene/type Mono
+/gps/ene/mono 3 GeV
+###
+/run/reinitializeGeometry 
+/run/beamOn 3000
