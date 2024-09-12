@@ -44,7 +44,7 @@ private:
     G4Transform3D Rotation(G4double, G4double, G4double, G4double, G4double, G4double, G4double);
     G4Transform3D doubleRotation(G4double, G4double, G4double, G4double, G4double, G4double, G4double);
     G4Transform3D rotZ(G4double theta, G4double x_1, G4double y_1, G4double z_1);
-    G4LogicalVolume* MyDoDiConstruction(G4double a,G4double Steel,G4double Foil,G4Material* mat);
+    G4LogicalVolume* MyDoDiConstruction(G4double a,G4double Steel,G4double Foil,G4Material* mat, char* name);
     void SetMaxStep(G4double maxStep);
     
     G4int nCols, nRows;
@@ -73,7 +73,7 @@ private:
 
     void DefineMaterials();
     void defineBoundaries();
-    G4Material *fWLSfoilPMMA, *matsteel, *fH2O, *fworldMat, *matparaffin, *Gdsol,  *Gdmat;
+    G4Material *fWLSfoilPMMA, *matsteel, *fH2O, *fworldMat, *matparaffin, *Gdsol,*Gdsol2,  *Gdmat;
     std::vector<G4double> fenergySmall,fenergy;
     G4Element *elGd,*H, *C, *O;
 

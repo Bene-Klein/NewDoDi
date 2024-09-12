@@ -30,8 +30,7 @@ int main(int argc, char** argv)
       G4RunManager* runManager = new G4RunManager;
     #endif
 
-    G4StepLimiterPhysics* stepLimitPhys = new G4StepLimiterPhysics();
-    stepLimitPhys->SetApplyToAll(true); // activates step limit for ALL particles    
+    G4StepLimiterPhysics* stepLimitPhys = new G4StepLimiterPhysics();   
     G4VModularPhysicsList *physics = new Shielding();
     physics->RegisterPhysics(new G4EmStandardPhysics());
     physics->RegisterPhysics(new G4OpticalPhysics());

@@ -1,0 +1,20 @@
+/run/numberOfThreads 16
+/run/initialize
+###
+###
+/gps/particle gamma
+###
+/gps/pos/type Volume
+/gps/pos/shape Para
+/gps/pos/centre 0 0 35  
+/gps/pos/halfx 2.5 
+/gps/pos/halfy 2.5 
+/gps/pos/halfz 2.5 
+###
+/gps/ang/type iso
+###
+/gps/ene/type Mono
+/gps/ene/mono 4.4 MeV
+###
+/run/reinitializeGeometry 
+/run/beamOn 100000
