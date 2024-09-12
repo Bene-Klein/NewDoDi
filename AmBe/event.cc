@@ -45,10 +45,12 @@ void MyEventAction::EndOfEventAction(const G4Event* event)
             G4cout << "ID: "<< EventID << "  Time: " << elapsed_seconds.count()  << "  sysTime: " << std::ctime(&end_time)<< G4endl;
             #endif
         }
-    if (EventID % 100000 == 0) 
+    if (EventID % 1000 == 0) 
     {
         G4cout << "ID: "<< EventID <<G4endl;
     }
+    //G4cout << "ID: "<< EventID << G4endl;
+    
     G4double X1=fpos1.x();
     G4double X2=fpos2.x();
     G4double Y1=fpos1.y();
@@ -78,7 +80,9 @@ void MyEventAction::EndOfEventAction(const G4Event* event)
 
     man->FillNtupleDColumn(1,0,CaptureTime);
     man->FillNtupleIColumn(1,1,n);
-    man->FillNtupleIColumn(1,2,EventID);
+    man->FillNtupleDColumn(1,2,len);
+    man->FillNtupleIColumn(1,3,isPanel);
+    man->FillNtupleIColumn(1,4,EventID);
     man->AddNtupleRow(1);  
 
 }

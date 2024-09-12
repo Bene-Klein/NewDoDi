@@ -82,6 +82,9 @@ void MyDetectorConstruction::DefineMaterials()
     Gdsol->AddMaterial(fH2O, 99.8*perCent);  /*Final Material consisting of above stuff and their %*/
     Gdsol->AddMaterial(Gdmat, 0.2*perCent);
 
+    Gdsol2 = new G4Material("Gd_Solution2", 1.000*g/cm3, 2);
+    Gdsol2->AddMaterial(fWLSfoilPMMA, 99.8*perCent);  /*Final Material consisting of above stuff and their %*/
+    Gdsol2->AddMaterial(Gdmat, 0.2*perCent);
 
 
     fworldMat = nist->FindOrBuildMaterial("G4_AIR"); /*Use a Material of the Nistmanager*/
@@ -179,7 +182,7 @@ G4Transform3D MyDetectorConstruction::rotZ(G4double theta, G4double x_1, G4doubl
  
     return Trans;
 }
-G4LogicalVolume* MyDetectorConstruction::MyDoDiConstruction(G4double a, G4double Steel, G4double Foil, G4Material* mat )
+G4LogicalVolume* MyDetectorConstruction::MyDoDiConstruction(G4double a, G4double Steel, G4double Foil, G4Material* mat, char* name)
 {
                 //prelim calculations
                 G4double alpha = 72 * M_PI / 180;
@@ -264,7 +267,7 @@ G4LogicalVolume* MyDetectorConstruction::MyDoDiConstruction(G4double a, G4double
                 // Finally close the structure
                 //
                 munion_solid->Voxelize();
-                G4LogicalVolume* lvol =new G4LogicalVolume(munion_solid,mat,"Union_LV");
+                G4LogicalVolume* lvol =new G4LogicalVolume(munion_solid,mat,name);
                 return lvol;                 
 }
 G4VPhysicalVolume *MyDetectorConstruction::Construct()
@@ -297,9 +300,13 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     G4double phiTotal = 2 * M_PI;
     G4int numSide = 5;
     G4int numZPlanes =2;
+    G4int GdThickness = 3.3*cm;
+    G4int GdLength = 33*cm;    
+    G4double r_I=(GdLength / 20) * sqrt(250 + 110 * sqrt(5));
+    G4double d_L = GdLength / (2 * tan(36 * degree));
     G4double rInnerGadolinium[] = {0, 0};
-    G4double rOuterGadolinium[] = {(d_l/r_i)*(r_i - 5*cm), (d_l/r_i)*(r_i -5*cm)};
-    G4double zPlaneGadolinium[] = {0,5*cm};
+    G4double rOuterGadolinium[] = {d_L, d_L};
+    G4double zPlaneGadolinium[] = {0,GdThickness};
 
     //PMT Polycone    
     G4double realRadius =(252/2) * mm;
@@ -318,19 +325,22 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     
     solidGadolinium = new G4Polyhedra("solidGadolinium", phiStart, phiTotal, numSide, numZPlanes, zPlaneGadolinium, rInnerGadolinium, rOuterGadolinium);
 
+    solidPanel = new G4Box("solidPanel", 12*cm,6*cm, 1*mm);
 
     // logic volume
     logicWorld = new G4LogicalVolume(solidWorld, fworldMat, "logicWorld");
 
-    logicSteel = MyDoDiConstruction(450,10,65*um,matsteel);
+    logicSteel = MyDoDiConstruction(450,10,65*um,matsteel, "logicSteel");
 
-    logicFoil = MyDoDiConstruction(450,0,65*um,fWLSfoilPMMA);
+    logicFoil = MyDoDiConstruction(450,0,65*um,fWLSfoilPMMA, "logicFoil");
 
-    logicWater = MyDoDiConstruction(450,0,0,fH2O);
+    logicWater = MyDoDiConstruction(450,0,0,fH2O,"logicWater");
     
     logicDetector = new G4LogicalVolume(solidDetector, fworldMat, "logicDetector");
 
-    logicGadolinium =new G4LogicalVolume(solidGadolinium, Gdsol, "logicGadolinium");
+    logicGadolinium =new G4LogicalVolume(solidGadolinium, Gdmat, "logicGadolinium");
+
+    logicPanel = new G4LogicalVolume(solidPanel,fworldMat,"logicPanel");
    
     //World Vol. placement
     physWorld = new G4PVPlacement(0, G4ThreeVector(0., 0., 0.), logicWorld, "physWorld", 0, false, 0, true);
@@ -465,14 +475,15 @@ G4VPhysicalVolume *MyDetectorConstruction::Construct()
     //physParaffin4 = new G4PVPlacement(rotZ(90*degree, 0, -22.5*cm,110*cm), logicParaffin,"physParaffin",logicWorld,false,0,true);
     
     //physHuman = new G4PVPlacement(0,G4ThreeVector(0,1.5*m,0),logicHuman, "physHuman", logicWorld, false, 69, true);
-
-    physGadolinium = new G4PVPlacement(0, G4ThreeVector(0,0,+(r_i - 5*cm-2*FoilThickness)), logicGadolinium, "physGadolinium", logicWater1, false, 35, true);
-    */
+*/
+    physGadolinium = new G4PVPlacement(0, G4ThreeVector(0,0,+(r_i - GdThickness)), logicGadolinium, "physGadolinium", logicWater, false, 35, true);
+    
+    //physPanel = new G4PVPlacement(0,G4ThreeVector(0, 186*mm, 521.147*mm),logicPanel,"physPanel",logicWorld,false,6666,true);
     fScoringVolume = logicGadolinium;
     defineBoundaries();
-    G4double maxStep = 1 *mm;
-    auto fStepLimit = new G4UserLimits(maxStep);
-    logicWater->SetUserLimits(fStepLimit);
+    //G4double maxStep = 1 *mm;
+    //auto fStepLimit = new G4UserLimits(maxStep);
+    //logicWater->SetUserLimits(fStepLimit);
 
     return physWorld;
 }

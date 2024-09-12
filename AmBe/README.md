@@ -1,2 +1,3 @@
-# Americium Beryllium Source 
-## 1e4 neutrons activity 
+# This is a simulation of a Dodecahedron in Geant4
+
+## by Benedikt Klein

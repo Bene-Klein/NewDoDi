@@ -28,12 +28,14 @@ void MySteppingAction::UserSteppingAction(const G4Step *step)
     //
     G4String particleNameMu ="mu-";
     G4String particleNamePhoton ="opticalphoton";
+    G4String particleNameGamma ="gamma";
     G4String particleNameElectron ="e-";
     G4String particleNamePositron ="e+";
     G4String particleNameNeutron ="neutron";
     //
     G4ParticleDefinition *requiredMu = particleTable->FindParticle(particleNameMu);
     G4ParticleDefinition *requiredPhoton = particleTable->FindParticle(particleNamePhoton);
+    G4ParticleDefinition *requiredGamma = particleTable->FindParticle(particleNameGamma);
     G4ParticleDefinition *requiredElectron = particleTable->FindParticle(particleNameElectron);
     G4ParticleDefinition *requiredPositron = particleTable->FindParticle(particleNamePositron);
     G4ParticleDefinition *requiredNeutron = particleTable->FindParticle(particleNameNeutron);
@@ -43,20 +45,22 @@ if(!(step->GetPostStepPoint()->GetTouchable()->GetVolume() && step->GetPreStepPo
     return;
     G4LogicalVolume *PreVolume = step->GetPreStepPoint()->GetTouchable()->GetVolume()->GetLogicalVolume();
     G4LogicalVolume *PostVolume = step->GetPostStepPoint()->GetTouchable()->GetVolume()->GetLogicalVolume();
-if(PreVolume->GetName() == "logicPanel" || PostVolume->GetName() == "logicDoDi")
+if(PreVolume->GetName() == "logicPanel" || PostVolume->GetName() == "logicPanel")
 {
     fEventAction->IsPanel(true);
 }
-if(PreVolume->GetName() == "logicFoil" && PostVolume->GetName() == "logicWater")
-{            
-    G4ThreeVector stppos1 = step->GetPostStepPoint()->GetPosition();
-    fEventAction->Setpos1(stppos1);       
-}
-if(PreVolume->GetName() == "logicWater" && PostVolume->GetName() == "logicFoil")
-{            
-    G4ThreeVector stppos2 = step->GetPostStepPoint()->GetPosition(); 
-    fEventAction->Setpos2(stppos2);  
-                        
+if(particle==requiredMu){
+    if(PreVolume->GetName() == "logicFoil" && PostVolume->GetName() == "logicWater")
+    {            
+        G4ThreeVector stppos1 = step->GetPostStepPoint()->GetPosition();
+        fEventAction->Setpos1(stppos1);       
+    }
+    if(PreVolume->GetName() == "logicWater" && PostVolume->GetName() == "logicFoil")
+    {            
+        G4ThreeVector stppos2 = step->GetPostStepPoint()->GetPosition(); 
+        fEventAction->Setpos2(stppos2);  
+                            
+    }
 }
 if(process->GetProcessName() == "nCapture" && PreVolume->GetName() == "logicWater")
 {
@@ -71,13 +75,13 @@ if(PreVolume->GetName() == "logicWater")
 }
 if (particle == requiredMu)
 {
-    G4cout << step->GetTrack()->GetStepLength() / CLHEP::mm << G4endl;
+    //G4cout << step->GetTrack()->GetStepLength() / CLHEP::mm << G4endl;
 }
 if (particle == requiredPhoton)
 {
-    man->FillNtupleIColumn(3,0,TrackID);
-    man->FillNtupleIColumn(3,1,EventID);
-    man->AddNtupleRow(3); 
+    //man->FillNtupleIColumn(3,0,TrackID);
+    //man->FillNtupleIColumn(3,1,EventID);
+    //man->AddNtupleRow(3); 
 }
 if(particle == requiredNeutron && step->GetTrack()->GetTrackStatus() == fStopAndKill && process->GetProcessName() == "nCapture" )
     {
@@ -86,8 +90,7 @@ if(particle == requiredNeutron && step->GetTrack()->GetTrackStatus() == fStopAnd
         if (hproc) target = hproc->GetTargetIsotope();
         G4String targetName = "XXXX";  
         if (target) {
-            targetName = target->GetName();
-            //G4cout << targetName << G4endl;
+            targetName = target->GetName();            
             man->FillNtupleSColumn(2,0,targetName);
             G4ThreeVector position = endPoint->GetPosition();
             G4double x_position = position.getX();
@@ -103,6 +106,7 @@ if(particle == requiredNeutron && step->GetTrack()->GetTrackStatus() == fStopAnd
             //man->FillNtupleDColumn(2,4,energy);
             if(targetName.contains("Gd"))
             {
+                //G4cout << targetName << G4endl;
                 fEventAction->Addn(1);
                 fEventAction->SetTime(Time);
             }
@@ -124,4 +128,11 @@ if(particle == requiredNeutron && step->GetTrack()->GetTrackStatus() == fStopAnd
             }
         }
     }
+if(particle == requiredGamma && PreVolume->GetName() == "logicSteel"&& PostVolume->GetName() == "logicWorld" ){
+    G4double energy = preStepPoint->GetKineticEnergy();
+    man->FillNtupleDColumn(4,0,energy);
+    man->FillNtupleIColumn(4,1,EventID);
+    man->AddNtupleRow(4);  
+
+}
 }

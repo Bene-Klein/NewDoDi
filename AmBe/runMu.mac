@@ -1,0 +1,26 @@
+/run/numberOfThreads 16
+/run/initialize
+###
+/gps/particle mu-
+###
+/gps/pos/type Plane
+/gps/pos/shape Square
+/gps/pos/centre 0 0 -150
+/gps/pos/halfx 50.0
+/gps/pos/halfy 50.0
+/gps/pos/rot1 1 0 0
+/gps/pos/rot2 0 1 0
+###
+/gps/ang/type iso
+/gps/ang/rot1 -1 0 0
+/gps/ang/rot2 0 1 0
+/gps/ang/mintheta 0
+/gps/ang/maxtheta 0.5*pi rad
+/gps/ang/minphi 0
+/gps/ang/maxphi 2*pi rad
+###
+/gps/ene/type Mono
+/gps/ene/mono 3 GeV
+###
+/run/reinitializeGeometry 
+/run/beamOn 10000

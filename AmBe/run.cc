@@ -13,6 +13,8 @@ MyRunAction::MyRunAction()
     man->CreateNtuple("Out","Out");
     man->CreateNtupleDColumn("CaptureTime");
     man->CreateNtupleIColumn("Capture");
+    man->CreateNtupleDColumn("Length");
+    man->CreateNtupleIColumn("Panel");
     man->CreateNtupleIColumn("EventID");
     man->FinishNtuple(1);
       
@@ -28,12 +30,11 @@ MyRunAction::MyRunAction()
     man->CreateNtupleIColumn("ID");
     man->CreateNtupleIColumn("EventID");
     man->FinishNtuple(3);
-    /* 
-    man->CreateNtuple("Count","Count");
-    man->CreateNtupleIColumn("Count");
+
+    man->CreateNtuple("EscapeGamma","EscapeGamma");
+    man->CreateNtupleDColumn("Energy");
     man->CreateNtupleIColumn("EventID");
-    man->FinishNtuple(2);
-    */    
+    man->FinishNtuple(4);    
 }
 
 MyRunAction::~MyRunAction()
